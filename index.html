@@ -717,184 +717,180 @@
     </div>
   </footer>
 
-  <script>
-    const WA_NUMBER = "16892208902";
+ <script>
+  const WA_NUMBER = "16892208902";
 
-    // ===== Mobile: click to open/close popup (hover doesn't exist) =====
-    const pop = document.getElementById("estimatePop");
-    const btn = document.getElementById("estimateBtn");
+  // ===== Mobile: click to open/close popup (hover doesn't exist) =====
+  const estimatePop = document.getElementById("estimatePop");
+  const estimateBtn = document.getElementById("estimateBtn");
 
-    if (pop && btn){
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        pop.classList.toggle("open");
-      });
-      document.addEventListener("click", (e) => {
-        if (!pop.contains(e.target)) pop.classList.remove("open");
-      });
-    }
+  if (estimatePop && estimateBtn) {
+    estimateBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      estimatePop.classList.toggle("open");
+    });
+    document.addEventListener("click", (e) => {
+      if (!estimatePop.contains(e.target)) estimatePop.classList.remove("open");
+    });
+  }
 
-const quoteForm = document.getElementById("quoteForm");
+  // ===== Quote form -> Netlify Function =====
+  const quoteForm = document.getElementById("quoteForm");
 
-if (quoteForm){
-  quoteForm.addEventListener("submit", async function(e){
-    e.preventDefault();
+  if (quoteForm) {
+    quoteForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
 
-    const payload = {
-      name: document.getElementById("qName").value.trim(),
-      phone: document.getElementById("qPhone").value.trim(),
-      city: document.getElementById("qCity").value.trim(),
-      details: document.getElementById("qDetails").value.trim(),
-      source: "website-popup",
-      page: location.href,
-      ts: new Date().toISOString()
-    };
+      const nameEl = document.getElementById("qName");
+      const phoneEl = document.getElementById("qPhone");
+      const cityEl = document.getElementById("qCity");
+      const detailsEl = document.getElementById("qDetails");
 
-    try{
-      const res = await fetch("/.netlify/functions/lead", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
+      const payload = {
+        name: (nameEl?.value || "").trim(),
+        phone: (phoneEl?.value || "").trim(),
+        city: (cityEl?.value || "").trim(),
+        details: (detailsEl?.value || "").trim(),
+        source: "website-popup",
+        page: location.href,
+        ts: new Date().toISOString(),
+      };
 
-      if(!res.ok) throw new Error("HTTP " + res.status);
-
-      alert("✅ Request sent! We will contact you shortly.");
-      quoteForm.reset();
-      document.getElementById("estimatePop")?.classList.remove("open");
-    }catch(err){
-      alert("❌ Error sending request. Please use WhatsApp button.");
-      console.error(err);
-    }
-  });
-}
-
-    try {
-      const r = await fetch("/api/lead", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-
-      if (!r.ok) {
-        const txt = await r.text();
-        alert("Error sending request: " + txt);
+      // простая валидация (дизайн не трогаем)
+      if (!payload.name || !payload.phone) {
+        alert("Please enter your name and phone number.");
         return;
       }
 
-      alert("Sent! We will contact you soon.");
-      quoteForm.reset();
-      // закрыть попап
-      const pop = document.getElementById("estimatePop");
-      if (pop) pop.classList.remove("open");
+      const submitBtn = quoteForm.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
 
-    } catch (err) {
-      alert("Network error. Please try again.");
-    }
-  });
-}
+      try {
+        const res = await fetch("/.netlify/functions/lead", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
 
-    // ===== calculator =====
-    const PRICES = {
-      drywall:  { name:"Drywall Repair",      baseMin:120, baseMax:220, materialsMin:25, materialsMax:60 },
-      tv:       { name:"TV Mounting",         baseMin:140, baseMax:260, materialsMin:15, materialsMax:50 },
-      locks:    { name:"Locks & Doors",       baseMin:120, baseMax:240, materialsMin:0,  materialsMax:0  },
-      paint:    { name:"Painting",            baseMin:220, baseMax:450, materialsMin:35, materialsMax:90 },
-      plumbing: { name:"Minor Plumbing",      baseMin:120, baseMax:260, materialsMin:10, materialsMax:80 },
-      electric: { name:"Electrical Fixtures", baseMin:120, baseMax:280, materialsMin:10, materialsMax:80 },
-      furniture:{ name:"Furniture Assembly",  baseMin:90,  baseMax:220, materialsMin:0,  materialsMax:0  },
-      general:  { name:"General Repairs (Hourly)", baseMin:85, baseMax:125, materialsMin:0, materialsMax:0 }
-    };
+        const txt = await res.text();
 
-    const COMPLEX = {
-      basic:    { multMin:0.90, multMax:0.95 },
-      standard: { multMin:1.00, multMax:1.00 },
-      complex:  { multMin:1.15, multMax:1.35 }
-    };
+        if (!res.ok) {
+          throw new Error(txt || ("HTTP " + res.status));
+        }
 
-    function travelFee(miles){
-      const extra = Math.max(0, miles - 10);
-      return { min: extra * 1.5, max: extra * 2.5 };
-    }
-    function urgencyFee(baseMin, baseMax, sameDay, weekend){
-      let min = 0, max = 0;
-      if (sameDay){ min += baseMin * 0.10; max += baseMax * 0.15; }
-      if (weekend){ min += baseMin * 0.10; max += baseMax * 0.15; }
-      return { min, max };
-    }
-    function money(n){ return "$" + Math.round(n); }
-
-    const elSvc = document.getElementById("svc");
-    const elQty = document.getElementById("qty");
-    const elLevel = document.getElementById("level");
-    const elMiles = document.getElementById("miles");
-    const elMaterials = document.getElementById("materials");
-    const elSameDay = document.getElementById("sameDay");
-    const elWeekend = document.getElementById("weekend");
-    const elNotes = document.getElementById("notes");
-
-    const elRange = document.getElementById("range");
-    const elBreak = document.getElementById("breakdown");
-
-    const elCalcBtn = document.getElementById("calcBtn");
-    const elWaBtn = document.getElementById("waBtn");
-
-    let last = null;
-
-    function calc(){
-      const key = elSvc.value;
-      const qty = Math.max(1, parseInt(elQty.value || "1", 10));
-      const lvl = elLevel.value;
-      const miles = Math.max(0, parseFloat(elMiles.value || "0"));
-
-      const p = PRICES[key];
-      const c = COMPLEX[lvl];
-
-      let baseMin = p.baseMin * qty * c.multMin;
-      let baseMax = p.baseMax * qty * c.multMax;
-
-      let matMin = 0, matMax = 0;
-      if (elMaterials.checked){
-        matMin = p.materialsMin * qty;
-        matMax = p.materialsMax * qty;
+        alert("✅ Request sent! We will contact you shortly.");
+        quoteForm.reset();
+        document.getElementById("estimatePop")?.classList.remove("open");
+      } catch (err) {
+        console.error(err);
+        alert("❌ Error sending request. Please use WhatsApp button.");
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
       }
+    });
+  }
 
-      const tr = travelFee(miles);
-      const urg = urgencyFee(baseMin, baseMax, elSameDay.checked, elWeekend.checked);
+  // ===== calculator =====
+  const PRICES = {
+    drywall:  { name:"Drywall Repair",      baseMin:120, baseMax:220, materialsMin:25, materialsMax:60 },
+    tv:       { name:"TV Mounting",         baseMin:140, baseMax:260, materialsMin:15, materialsMax:50 },
+    locks:    { name:"Locks & Doors",       baseMin:120, baseMax:240, materialsMin:0,  materialsMax:0  },
+    paint:    { name:"Painting",            baseMin:220, baseMax:450, materialsMin:35, materialsMax:90 },
+    plumbing: { name:"Minor Plumbing",      baseMin:120, baseMax:260, materialsMin:10, materialsMax:80 },
+    electric: { name:"Electrical Fixtures", baseMin:120, baseMax:280, materialsMin:10, materialsMax:80 },
+    furniture:{ name:"Furniture Assembly",  baseMin:90,  baseMax:220, materialsMin:0,  materialsMax:0  },
+    general:  { name:"General Repairs (Hourly)", baseMin:85, baseMax:125, materialsMin:0, materialsMax:0 }
+  };
 
-      const MIN_JOB = 120;
-      let totalMin = baseMin + matMin + tr.min + urg.min;
-      let totalMax = baseMax + matMax + tr.max + urg.max;
+  const COMPLEX = {
+    basic:    { multMin:0.90, multMax:0.95 },
+    standard: { multMin:1.00, multMax:1.00 },
+    complex:  { multMin:1.15, multMax:1.35 }
+  };
 
-      totalMin = Math.max(totalMin, MIN_JOB);
-      totalMax = Math.max(totalMax, MIN_JOB);
+  function travelFee(miles){
+    const extra = Math.max(0, miles - 10);
+    return { min: extra * 1.5, max: extra * 2.5 };
+  }
+  function urgencyFee(baseMin, baseMax, sameDay, weekend){
+    let min = 0, max = 0;
+    if (sameDay){ min += baseMin * 0.10; max += baseMax * 0.15; }
+    if (weekend){ min += baseMin * 0.10; max += baseMax * 0.15; }
+    return { min, max };
+  }
+  function money(n){ return "$" + Math.round(n); }
 
-      elRange.textContent = `${money(totalMin)} – ${money(totalMax)}`;
-      elBreak.innerHTML =
-        `<div class="smallmuted">
-          <b>${p.name}</b> × ${qty} • ${lvl}<br>
-          Labor: ${money(baseMin)}–${money(baseMax)}<br>
-          Travel: ${money(tr.min)}–${money(tr.max)}<br>
-          Urgency: ${money(urg.min)}–${money(urg.max)}<br>
-          Materials: ${money(matMin)}–${money(matMax)}
-        </div>`;
+  const elSvc = document.getElementById("svc");
+  const elQty = document.getElementById("qty");
+  const elLevel = document.getElementById("level");
+  const elMiles = document.getElementById("miles");
+  const elMaterials = document.getElementById("materials");
+  const elSameDay = document.getElementById("sameDay");
+  const elWeekend = document.getElementById("weekend");
+  const elNotes = document.getElementById("notes");
 
-      last = {
-        service: p.name,
-        qty, lvl, miles,
-        materials: elMaterials.checked,
-        sameDay: elSameDay.checked,
-        weekend: elWeekend.checked,
-        notes: (elNotes.value || "").trim(),
-        min: Math.round(totalMin),
-        max: Math.round(totalMax)
-      };
+  const elRange = document.getElementById("range");
+  const elBreak = document.getElementById("breakdown");
+
+  const elCalcBtn = document.getElementById("calcBtn");
+  const elWaBtn = document.getElementById("waBtn");
+
+  let last = null;
+
+  function calc(){
+    const key = elSvc.value;
+    const qty = Math.max(1, parseInt(elQty.value || "1", 10));
+    const lvl = elLevel.value;
+    const miles = Math.max(0, parseFloat(elMiles.value || "0"));
+
+    const p = PRICES[key];
+    const c = COMPLEX[lvl];
+
+    let baseMin = p.baseMin * qty * c.multMin;
+    let baseMax = p.baseMax * qty * c.multMax;
+
+    let matMin = 0, matMax = 0;
+    if (elMaterials.checked){
+      matMin = p.materialsMin * qty;
+      matMax = p.materialsMax * qty;
     }
 
-    function sendToWhatsApp(){
-      if (!last) calc();
+    const tr = travelFee(miles);
+    const urg = urgencyFee(baseMin, baseMax, elSameDay.checked, elWeekend.checked);
 
-      const msg =
+    const MIN_JOB = 120;
+    let totalMin = baseMin + matMin + tr.min + urg.min;
+    let totalMax = baseMax + matMax + tr.max + urg.max;
+
+    totalMin = Math.max(totalMin, MIN_JOB);
+    totalMax = Math.max(totalMax, MIN_JOB);
+
+    elRange.textContent = `${money(totalMin)} – ${money(totalMax)}`;
+    elBreak.innerHTML =
+      `<div class="smallmuted">
+        <b>${p.name}</b> × ${qty} • ${lvl}<br>
+        Labor: ${money(baseMin)}–${money(baseMax)}<br>
+        Travel: ${money(tr.min)}–${money(tr.max)}<br>
+        Urgency: ${money(urg.min)}–${money(urg.max)}<br>
+        Materials: ${money(matMin)}–${money(matMax)}
+      </div>`;
+
+    last = {
+      service: p.name,
+      qty, lvl, miles,
+      materials: elMaterials.checked,
+      sameDay: elSameDay.checked,
+      weekend: elWeekend.checked,
+      notes: (elNotes.value || "").trim(),
+      min: Math.round(totalMin),
+      max: Math.round(totalMax)
+    };
+  }
+
+  function sendToWhatsApp(){
+    if (!last) calc();
+
+    const msg =
 `Hi! I used your estimate calculator.
 
 Service: ${last.service}
@@ -910,22 +906,22 @@ ${last.notes ? "\nNotes: " + last.notes : ""}
 
 Please confirm final pricing and availability.`;
 
-      const url = "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(msg);
-      window.open(url, "_blank");
-    }
+    const url = "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(msg);
+    window.open(url, "_blank");
+  }
 
-    if (elCalcBtn) elCalcBtn.addEventListener("click", calc);
-    if (elWaBtn) elWaBtn.addEventListener("click", sendToWhatsApp);
+  if (elCalcBtn) elCalcBtn.addEventListener("click", calc);
+  if (elWaBtn) elWaBtn.addEventListener("click", sendToWhatsApp);
 
-    ["change","input"].forEach(evt=>{
-      [elSvc,elQty,elLevel,elMiles,elMaterials,elSameDay,elWeekend].forEach(x=>{
-        if (x) x.addEventListener(evt, ()=>{ last=null; calc(); });
-      });
-      if (elNotes) elNotes.addEventListener(evt, ()=>{ last=null; });
+  ["change","input"].forEach(evt=>{
+    [elSvc,elQty,elLevel,elMiles,elMaterials,elSameDay,elWeekend].forEach(x=>{
+      if (x) x.addEventListener(evt, ()=>{ last=null; calc(); });
     });
+    if (elNotes) elNotes.addEventListener(evt, ()=>{ last=null; });
+  });
 
-    if (elSvc) calc();
-  </script>
+  if (elSvc) calc();
+</script>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CGZ526R0BP"></script>
 <script>
