@@ -788,8 +788,6 @@ City: ${payload.city || "-"}
 Details: ${payload.details || "-"}
 Page: ${payload.page}`;
 
-const waUrl = "https://wa.me/16892208902?text=" + encodeURIComponent(waMsg);
-window.open(waUrl, "_blank");
 
         if (statusEl) statusEl.textContent = "✅ Sent! We will contact you shortly.";
         quoteForm.reset();
