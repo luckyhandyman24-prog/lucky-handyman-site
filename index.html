@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lucky Handyman – Tampa Bay</title>
+  <meta name="description" content="Trusted handyman services in Tampa Bay. Same-day options, affordable rates. Request a project estimate."/>
+
+  <style>
+    :root{
+      /* ✅ чуть светлее весь сайт */
+      --bg:#14213a;                         /* было #0b1220 */
+      --text:#ffffff;
+      --muted:rgba(255,255,255,.88);         /* было .80 */
+      --line:rgba(255,255,255,.18);          /* было .12 */
+      --accent:#ffb100;
+      --accent2:#ff7a00;
+      --ok:#27c46b;
+      --shadow: 0 18px 60px rgba(0,0,0,.22); /* мягче */
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background: var(--bg);   /* ✅ было #060a14 */
+      color:var(--text)
+    }
+    a{color:inherit}
+    .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+
+    /* ===== TOPBAR ===== */
+    .topbar{
+      position:sticky;top:0;z-index:50;
+      background:rgba(6,10,20,.78);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .topbar .row{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:8px 0;gap:12px;
+    }
+    .top-left{display:flex;align-items:center;gap:12px;min-width:0}
+    .header-logo{
+      width:46px;height:46px;border-radius:50%;
+      overflow:hidden;flex-shrink:0;
+      border:2px solid rgba(255,255,255,.22);
+      box-shadow:0 10px 25px rgba(0,0,0,.35);
+      background:rgba(255,255,255,.06);
+    }
+    .header-logo img{width:100%;height:100%;object-fit:cover;display:block}
+    .brand{
+      font-weight:900;letter-spacing:.3px;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+      opacity:.95;
+    }
+    .phone-badge{
+      display:flex;align-items:center;gap:10px;
+      padding:8px 12px;border:1px solid rgba(255,255,255,.16);
+      border-radius:999px;background:rgba(255,255,255,.07);
+      font-weight:800;white-space:nowrap;
+    }
+    .top-actions{display:flex;gap:10px;align-items:center}
+
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      padding:10px 14px;border-radius:14px;
+      font-weight:900;text-decoration:none;border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.07);
+      white-space:nowrap;
+      cursor:pointer;
+    }
+    .btn.primary{
+      background:linear-gradient(180deg,var(--accent),var(--accent2));
+      color:#1c1200;border:none;
+      box-shadow:0 10px 28px rgba(255,177,0,.22);
+    }
+    .btn.whatsapp{
+      background:rgba(18,120,60,.72);
+      border:1px solid rgba(39,196,107,.55);
+      color:#ffffff;
+      box-shadow:0 8px 20px rgba(0,0,0,.35);
+      transition:all .2s ease;
+    }
+    .btn.whatsapp:hover{
+      background:rgba(14,100,50,.88);
+      transform:translateY(-2px);
+    }
+    @media (max-width: 920px){
+      .top-actions .btn{padding:10px 12px}
+      .phone-badge{display:none}
+    }
+
+   /* ===== HERO ===== */
+    .hero{
+      position:relative;
+      min-height:70vh;
+      display:flex;
+      align-items:center;
+      padding:26px 0 30px;
+
+      background:
+        linear-gradient(rgba(0,0,0,0.20), rgba(0,0,0,0.25)),
+        url("assets/hero-banner.jpg");
+      background-size:cover;
+      background-position:center 15%;
+    }
+
+    /* ✅ убрали лишнюю “шторку” — был двойной оверлей, баннер становился слишком темным */
+    /* .hero::before удалён */
+
+    .hero .wrap{position:relative;z-index:2}
+
+    .hero-text{padding:6px 6px 0}
+
+    .headline{
+      margin:8px 0 10px;
+      font-size:52px;
+      line-height:1.04;
+      letter-spacing:-.6px;
+      color:#fff;
+      /* ✅ читаемость без заднего блока */
+      text-shadow:
+        0 2px 6px rgba(0,0,0,.75),
+        0 10px 24px rgba(0,0,0,.85),
+        0 22px 55px rgba(0,0,0,.95);
+    }
+    .sub{
+      margin:0 0 14px;
+      color:rgba(255,255,255,.95);
+      font-size:20px;
+      text-shadow:
+        0 2px 6px rgba(0,0,0,.70),
+        0 10px 22px rgba(0,0,0,.85);
+    }
+    @media (max-width: 920px){
+      .hero{min-height:auto}
+      .headline{font-size:40px}
+      .sub{font-size:18px}
+    }
+
+    .ticks{
+      display:flex;flex-wrap:wrap;gap:10px;
+      margin:14px 0 16px;
+    }
+    .tick{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;border-radius:999px;
+      background:rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.14);
+      font-weight:900;
+      backdrop-filter: blur(4px);
+    }
+    .tick i{
+      width:10px;height:10px;border-radius:50%;
+      background:var(--ok);
+      box-shadow:0 0 0 4px rgba(39,196,107,.12);
+    }
+
+    /* ===== HERO center CTA row ===== */
+    .hero-cta-center{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    /* ===== Hover Estimate (popover) ===== */
+    .hero-card{
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      background:rgba(18,30,56,.78);
+      border:1px solid rgba(255,255,255,.16);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .estimate-pop{
+      position:relative;
+      display:inline-block;
+    }
+    .estimate-pop > .btn.primary{
+      padding:12px 18px;
+    }
+    .pop-card{
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%) translateY(10px);
+      top:100%;
+      width:min(420px, 92vw);
+      z-index:20;
+
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+
+      transition:
+        opacity .18s ease .18s,
+        transform .18s ease .18s,
+        visibility 0s linear .18s;
+    }
+    .estimate-pop:hover .pop-card{
+      opacity:1;
+      visibility:visible;
+      pointer-events:auto;
+      transform:translateX(-50%) translateY(16px);
+      transition-delay: .18s;
+    }
+    .estimate-pop .pop-card:hover{
+      opacity:1;
+      visibility:visible;
+      pointer-events:auto;
+    }
+    .estimate-pop.open .pop-card{
+      opacity:1;
+      visibility:visible;
+      pointer-events:auto;
+      transform:translateX(-50%) translateY(16px);
+      transition-delay: 0s;
+    }
+    .pop-card::before{
+      content:"";
+      position:absolute;
+      top:-10px;
+      left:50%;
+      transform:translateX(-50%);
+      border:10px solid transparent;
+      border-bottom-color: rgba(18,30,56,.78);
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,.35));
+    }
+
+    /* ===== Quote Form ===== */
+    .quote{padding:12px}
+    .quote .box{
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:16px;
+      padding:12px;
+    }
+    .quote h3{margin:0 0 10px;font-size:18px}
+    .field{display:grid;gap:8px;margin-bottom:10px}
+    .field label{font-size:12px;color:rgba(255,255,255,.80);font-weight:800}
+    .field input,.field textarea{
+      width:100%;
+      padding:12px 12px;border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.18);
+      color:#fff;outline:none;
+    }
+    .field input::placeholder,.field textarea::placeholder{color:rgba(255,255,255,.45)}
+    .checks{display:grid;gap:8px;margin:10px 0 12px}
+    .checks div{display:flex;gap:10px;align-items:flex-start;color:rgba(255,255,255,.84);font-weight:800;font-size:13px}
+    .checks span{
+      width:18px;height:18px;border-radius:6px;
+      background:rgba(39,196,107,.18);
+      border:1px solid rgba(39,196,107,.38);
+      display:inline-flex;align-items:center;justify-content:center;
+      font-size:12px;
+    }
+    .submit{
+      width:100%;
+      padding:12px 14px;border-radius:14px;
+      border:none;
+      background:linear-gradient(180deg,var(--accent),var(--accent2));
+      color:#1c1200;font-weight:1000;cursor:pointer;
+      box-shadow:0 10px 28px rgba(255,177,0,.20);
+    }
+    .small{font-size:12px;color:rgba(255,255,255,.70);margin:10px 0 0}
+
+    /* ===== Sections ===== */
+    .section{padding:30px 0}
+    .h2{margin:0 0 10px;font-size:30px;letter-spacing:-.3px}
+    .center{text-align:center}
+    .divider{height:1px;background:rgba(255,255,255,.10);margin:16px 0 18px}
+
+    /* ===== Services ===== */
+    .services{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    @media (max-width: 980px){ .services{grid-template-columns:repeat(2,1fr)} }
+    @media (max-width: 520px){ .services{grid-template-columns:1fr} }
+    .svc{
+      border-radius:18px;overflow:hidden;
+      background:rgba(18,30,56,.78);
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:0 14px 40px rgba(0,0,0,.25);
+      transition: transform .15s ease, border-color .15s ease;
+    }
+    .svc:hover{transform: translateY(-2px);border-color: rgba(255,177,0,.35)}
+    .svc img{width:100%;height:140px;object-fit:cover;display:block}
+    .svc .p{padding:12px 12px 14px}
+    .svc .t{font-weight:950;margin:0 0 6px}
+    .svc .d{margin:0;color:var(--muted);font-size:13px}
+
+    /* ===== Calculator ===== */
+    .calc-wrap{
+      background:rgba(18,30,56,.78);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:18px;
+      box-shadow:0 14px 40px rgba(0,0,0,.25);
+      overflow:hidden;
+    }
+    .calc-head{padding:16px 16px 0}
+    .calc-head h2{margin:0;font-size:28px;letter-spacing:-.3px}
+    .calc-head p{margin:8px 0 0;color:rgba(255,255,255,.78);font-weight:700}
+    .calc{
+      padding:16px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:14px;
+    }
+    @media (max-width: 920px){ .calc{grid-template-columns:1fr} }
+    .calc-box{
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:16px;
+      padding:14px;
+    }
+    .calc-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width: 520px){ .calc-grid{grid-template-columns:1fr} }
+    .cfield{display:grid;gap:8px;margin-bottom:10px}
+    .cfield label{font-size:12px;color:rgba(255,255,255,.82);font-weight:800}
+    .cfield select,.cfield input{
+      width:100%;
+      padding:12px 12px;border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.16);
+      color:#fff;outline:none;
+    }
+    .crow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:6px}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;border-radius:999px;
+      background:rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.12);
+      font-weight:900;
+      user-select:none;
+    }
+    .pill input{accent-color: var(--accent)}
+    .hr{height:1px;background:rgba(255,255,255,.10);margin:10px 0}
+    .big{font-size:34px;font-weight:1000;letter-spacing:-.5px}
+    .smallmuted{color:rgba(255,255,255,.76);font-size:12px;line-height:1.35}
+
+    /* ===== Before/After ===== */
+    .ba-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;align-items:stretch}
+    @media (max-width: 920px){ .ba-grid{grid-template-columns:1fr} }
+    .ba-card{
+      background:rgba(18,30,56,.78);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:18px;
+      box-shadow:0 14px 40px rgba(0,0,0,.25);
+      overflow:hidden;
+    }
+    .ba-header{padding:14px 14px 0}
+    .ba-title{margin:0;font-weight:950}
+    .ba-sub{margin:6px 0 0;color:var(--muted);font-size:13px}
+    .ba-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px}
+    .ba-shot{position:relative;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.12);transition:transform .3s ease}
+    .ba-shot img{width:100%;height:280px;object-fit:cover;display:block;transition:transform .4s ease}
+    .ba-shot:hover img{transform:scale(1.05)}
+    .tag{
+      position:absolute;left:12px;bottom:12px;
+      padding:8px 12px;border-radius:999px;
+      font-weight:900;font-size:12px;
+      background:rgba(0,0,0,.65);
+      border:1px solid rgba(255,255,255,.25);
+    }
+    .tag.after{background:linear-gradient(180deg,#ffb100,#ff7a00);color:#1c1200;border:none}
+
+    /* ===== Reviews ===== */
+    .reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    @media (max-width: 980px){ .reviews{grid-template-columns:1fr} }
+    .rev{
+      background:rgba(18,30,56,.78);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:18px;
+      box-shadow:0 14px 40px rgba(0,0,0,.25);
+      padding:14px;
+      display:grid;
+      grid-template-columns:64px 1fr;
+      gap:12px;
+      align-items:start;
+    }
+    .rev img{
+      width:64px;height:64px;border-radius:50%;
+      object-fit:cover;
+      border:3px solid rgba(255,255,255,.15);
+      box-shadow:0 8px 20px rgba(0,0,0,.4);
+    }
+    .stars{font-weight:950;color:var(--accent);letter-spacing:1px}
+    .rev p{margin:6px 0 0;color:rgba(255,255,255,.84);font-size:13px;line-height:1.45}
+    .rev b{display:block;margin-top:8px}
+    .rev small{color:rgba(255,255,255,.70)}
+
+    /* ===== Footer ===== */
+    footer{
+      border-top:1px solid rgba(255,255,255,.10);
+      background:rgba(6,10,20,.78);
+      padding:20px 0;
+      color:rgba(255,255,255,.82);
+      backdrop-filter: blur(10px);
+    }
+    footer .frow{
+      display:flex;flex-wrap:wrap;gap:10px;
+      align-items:center;justify-content:space-between;
+    }
+    .frow .left{display:flex;gap:10px;align-items:center}
+    .mini-logo{width:44px;height:auto;opacity:.95}
+  </style>
+</head>
+
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="wrap">
+      <div class="row">
+        <div class="top-left">
+          <div class="header-logo">
+            <img src="assets/logo.png" alt="Lucky Handyman logo">
+          </div>
+          <div class="brand">Lucky Handyman – Tampa Bay</div>
+          <div class="phone-badge">📞 (813) 438-6556</div>
+        </div>
+
+        <div class="top-actions">
+          <a class="btn" href="tel:+18134386556">Call Now</a>
+          <a class="btn whatsapp" href="https://wa.me/16892208902" target="_blank" rel="noopener">Message on WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-text">
+        <h1 class="headline">Trusted Handyman Services in Tampa Bay</h1>
+        <p class="sub">Same-day options • Affordable rates • Clean, professional work.</p>
+
+        <div class="ticks">
+          <div class="tick"><i></i> Same Day Service</div>
+          <div class="tick"><i></i> Fast Response</div>
+          <div class="tick"><i></i> Quality Guarantee</div>
+        </div>
+
+        <!-- centered CTA row (Call | Estimate hover | WhatsApp) -->
+        <div class="hero-cta-center">
+          <a class="btn" href="tel:+18134386556">Call Now</a>
+
+          <div class="estimate-pop" id="estimatePop">
+            <button class="btn primary" type="button" id="estimateBtn">Request a Project Estimate</button>
+
+            <!-- POPUP -->
+            <div class="pop-card" id="popCard">
+              <div class="hero-card">
+                <div class="quote">
+                  <div class="box">
+                    <h3>Request a Project Estimate</h3>
+
+                    <form id="quoteForm">
+                      <div class="field">
+                        <label>Your Name</label>
+                        <input id="qName" placeholder="John" required />
+                      </div>
+                      <div class="field">
+                        <label>Phone Number</label>
+                        <input id="qPhone" placeholder="(813) 000-0000" required />
+                      </div>
+                      <div class="field">
+                        <label>Your City</label>
+                        <input id="qCity" placeholder="Tampa / St. Pete / Clearwater" />
+                      </div>
+                      <div class="field">
+                        <label>Describe Your Project</label>
+                        <textarea id="qDetails" rows="3" placeholder="Drywall repair, paint touch-up, TV mount..."></textarea>
+                      </div>
+
+                      <div class="checks">
+                        <div><span>✓</span> Fast response</div>
+                        <div><span>✓</span> Transparent pricing</div>
+                        <div><span>✓</span> Clean finish</div>
+                      </div>
+
+                      <button class="submit" type="submit">SEND REQUEST</button>
+                      <div class="small">We’ll reply quickly by phone or message.</div>
+                    </form>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /POPUP -->
+          </div>
+
+          <a class="btn whatsapp" href="https://wa.me/16892208902" target="_blank" rel="noopener">Message on WhatsApp</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="section">
+    <div class="wrap">
+      <div class="center">
+        <h2 class="h2">Our Services</h2>
+        <div style="color:rgba(255,255,255,.72);font-weight:800">Tap a service and request pricing</div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="services">
+        <div class="svc"><img src="assets/svc-drywall.jpg" alt="Drywall repair"><div class="p"><div class="t">Drywall Repair</div><p class="d">Holes, cracks, patch & paint.</p></div></div>
+        <div class="svc"><img src="assets/svc-tv.jpg" alt="TV mounting"><div class="p"><div class="t">TV Mounting</div><p class="d">Clean install, hidden cables.</p></div></div>
+        <div class="svc"><img src="assets/svc-lock.jpg" alt="Locks & doors"><div class="p"><div class="t">Locks & Doors</div><p class="d">Install, replace, adjust.</p></div></div>
+        <div class="svc"><img src="assets/svc-paint.jpg" alt="Painting"><div class="p"><div class="t">Painting</div><p class="d">Interior & exterior touch-ups.</p></div></div>
+        <div class="svc"><img src="assets/svc-plumbing.jpg" alt="Minor plumbing"><div class="p"><div class="t">Minor Plumbing</div><p class="d">Faucets, leaks, small fixes.</p></div></div>
+        <div class="svc"><img src="assets/svc-electric.jpg" alt="Electrical fixtures"><div class="p"><div class="t">Electrical Fixtures</div><p class="d">Lights, fans, switches.</p></div></div>
+        <div class="svc"><img src="assets/svc-furniture.jpg" alt="Furniture assembly"><div class="p"><div class="t">Furniture Assembly</div><p class="d">IKEA & more.</p></div></div>
+        <div class="svc"><img src="assets/svc-general.jpg" alt="General repairs"><div class="p"><div class="t">General Repairs</div><p class="d">Small home fixes done right.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALCULATOR -->
+  <section class="section" id="estimate">
+    <div class="wrap">
+      <div class="calc-wrap">
+        <div class="calc-head">
+          <h2>Project Cost Estimate Calculator</h2>
+          <p>Select a service and options — get a quick price range. Then send it to WhatsApp.</p>
+          <div class="divider"></div>
+        </div>
+
+        <div class="calc">
+          <div class="calc-box">
+            <div class="calc-grid">
+              <div class="cfield">
+                <label>Service</label>
+                <select id="svc">
+                  <option value="drywall">Drywall Repair</option>
+                  <option value="tv">TV Mounting</option>
+                  <option value="locks">Locks & Doors</option>
+                  <option value="paint">Painting</option>
+                  <option value="plumbing">Minor Plumbing</option>
+                  <option value="electric">Electrical Fixtures</option>
+                  <option value="furniture">Furniture Assembly</option>
+                  <option value="general">General Repairs (Hourly)</option>
+                </select>
+              </div>
+
+              <div class="cfield">
+                <label>Quantity</label>
+                <input id="qty" type="number" min="1" value="1">
+              </div>
+
+              <div class="cfield">
+                <label>Complexity</label>
+                <select id="level">
+                  <option value="basic">Basic</option>
+                  <option value="standard" selected>Standard</option>
+                  <option value="complex">Complex</option>
+                </select>
+              </div>
+
+              <div class="cfield">
+                <label>Travel (miles from Tampa)</label>
+                <input id="miles" type="number" min="0" value="0">
+              </div>
+            </div>
+
+            <div class="crow">
+              <label class="pill"><input id="materials" type="checkbox"> Include materials</label>
+              <label class="pill"><input id="sameDay" type="checkbox"> Same-day</label>
+              <label class="pill"><input id="weekend" type="checkbox"> Weekend</label>
+            </div>
+
+            <div class="hr"></div>
+
+            <div class="cfield">
+              <label>Notes (optional)</label>
+              <input id="notes" placeholder="Example: 2 holes in drywall + paint match">
+            </div>
+
+            <div class="crow" style="margin-top:10px">
+              <button class="btn primary" type="button" id="calcBtn">CALCULATE</button>
+              <button class="btn whatsapp" type="button" id="waBtn">SEND TO WHATSAPP</button>
+            </div>
+
+            <!-- ✅ добавили твой дисклеймер правильно -->
+            <div class="smallmuted" style="margin-top:10px">
+              This calculator provides an approximate project cost range based on selected options.
+              Final pricing may vary depending on on-site inspection, materials, and project complexity.
+            </div>
+          </div>
+
+          <div class="calc-box">
+            <div style="font-weight:950;opacity:.95">Estimated Price Range</div>
+            <div class="big" id="range">$ —</div>
+            <div class="smallmuted" id="breakdown">Change options and click Calculate.</div>
+            <div class="hr"></div>
+            <div style="font-weight:950;opacity:.95">What’s included</div>
+            <div class="smallmuted">Labor estimate • travel adjustment • optional add-ons</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- BEFORE & AFTER -->
+  <section class="section">
+    <div class="wrap">
+      <div class="center">
+        <h2 class="h2">Before & After</h2>
+        <div style="color:rgba(255,255,255,.72);font-weight:800">Real results. Clean finish.</div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="ba-grid">
+        <div class="ba-card">
+          <div class="ba-header">
+            <p class="ba-title">Before & After</p>
+            <p class="ba-sub">Real results from our recent projects</p>
+          </div>
+          <div class="ba-compare">
+            <div class="ba-shot">
+              <img src="assets/ba-before.jpg" alt="Before repair">
+              <div class="tag">BEFORE</div>
+            </div>
+            <div class="ba-shot">
+              <img src="assets/ba-after.jpg" alt="After repair">
+              <div class="tag after">AFTER</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ba-card">
+          <div class="quote">
+            <div class="box">
+              <h3>Need help today?</h3>
+              <div style="color:rgba(255,255,255,.82);font-weight:800;margin-bottom:12px">
+                Send a quick message — we’ll reply fast.
+              </div>
+              <a class="btn whatsapp" href="https://wa.me/16892208902" target="_blank" rel="noopener" style="width:100%;margin-top:10px">Message on WhatsApp</a>
+              <div class="small">Or call: <a href="tel:+18134386556">(813) 438-6556</a></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section class="section">
+    <div class="wrap">
+      <div class="center">
+        <h2 class="h2">Customer Reviews</h2>
+        <div style="color:rgba(255,255,255,.72);font-weight:800">Trusted by local homeowners.</div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="reviews">
+        <div class="rev">
+          <img src="assets/rev-1.jpg" alt="Jake S.">
+          <div>
+            <div class="stars">★★★★★</div>
+            <p>“Fast, clean work. Fixed my drywall and matched the paint perfectly.”</p>
+            <b>Jake S.</b>
+            <small>Tampa</small>
+          </div>
+        </div>
+
+        <div class="rev">
+          <img src="assets/rev-2.jpg" alt="Emma R.">
+          <div>
+            <div class="stars">★★★★★</div>
+            <p>“Mounted my TV, hid the cables, and was super professional.”</p>
+            <b>Emma R.</b>
+            <small>St. Petersburg</small>
+          </div>
+        </div>
+
+        <div class="rev">
+          <img src="assets/rev-3.jpg" alt="Noah T.">
+          <div>
+            <div class="stars">★★★★★</div>
+            <p>“Affordable and quick. Great communication and quality.”</p>
+            <b>Noah T.</b>
+            <small>Clearwater</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <div class="frow">
+        <div class="left">
+          <img class="mini-logo" src="assets/logo.png" alt="Lucky Handyman logo"/>
+          <div>
+            <div style="font-weight:950;color:#fff">Lucky Handyman – Tampa Bay</div>
+            <div style="font-size:12px;color:rgba(255,255,255,.72)">Tampa • St. Pete • Clearwater</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <a class="btn" href="tel:+18134386556">Call (813) 438-6556</a>
+          <a class="btn whatsapp" href="https://wa.me/16892208902" target="_blank" rel="noopener">WhatsApp (689) 220-8902</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const WA_NUMBER = "16892208902";
+
+    // ===== Mobile: click to open/close popup (hover doesn't exist) =====
+    const pop = document.getElementById("estimatePop");
+    const btn = document.getElementById("estimateBtn");
+
+    if (pop && btn){
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        pop.classList.toggle("open");
+      });
+      document.addEventListener("click", (e) => {
+        if (!pop.contains(e.target)) pop.classList.remove("open");
+      });
+    }
+
+    // ===== quote form -> Netlify Function (/api/lead) =====
+const quoteForm = document.getElementById("quoteForm");
+if (quoteForm){
+  quoteForm.addEventListener("submit", async function(e){
+    e.preventDefault();
+
+    const name = document.getElementById("qName").value.trim();
+    const phone = document.getElementById("qPhone").value.trim();
+    const city = document.getElementById("qCity").value.trim();
+    const details = document.getElementById("qDetails").value.trim();
+
+    // минимальная валидация
+    if (!name || !phone){
+      alert("Please enter your name and phone number.");
+      return;
+    }
+
+    const payload = {
+      name,
+      phone,
+      city,
+      details,
+      source: "website_estimate_popup",
+      page: location.href
+    };
+
+    try {
+      const r = await fetch("/api/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (!r.ok) {
+        const txt = await r.text();
+        alert("Error sending request: " + txt);
+        return;
+      }
+
+      alert("Sent! We will contact you soon.");
+      quoteForm.reset();
+      // закрыть попап
+      const pop = document.getElementById("estimatePop");
+      if (pop) pop.classList.remove("open");
+
+    } catch (err) {
+      alert("Network error. Please try again.");
+    }
+  });
+}
+
+    // ===== calculator =====
+    const PRICES = {
+      drywall:  { name:"Drywall Repair",      baseMin:120, baseMax:220, materialsMin:25, materialsMax:60 },
+      tv:       { name:"TV Mounting",         baseMin:140, baseMax:260, materialsMin:15, materialsMax:50 },
+      locks:    { name:"Locks & Doors",       baseMin:120, baseMax:240, materialsMin:0,  materialsMax:0  },
+      paint:    { name:"Painting",            baseMin:220, baseMax:450, materialsMin:35, materialsMax:90 },
+      plumbing: { name:"Minor Plumbing",      baseMin:120, baseMax:260, materialsMin:10, materialsMax:80 },
+      electric: { name:"Electrical Fixtures", baseMin:120, baseMax:280, materialsMin:10, materialsMax:80 },
+      furniture:{ name:"Furniture Assembly",  baseMin:90,  baseMax:220, materialsMin:0,  materialsMax:0  },
+      general:  { name:"General Repairs (Hourly)", baseMin:85, baseMax:125, materialsMin:0, materialsMax:0 }
+    };
+
+    const COMPLEX = {
+      basic:    { multMin:0.90, multMax:0.95 },
+      standard: { multMin:1.00, multMax:1.00 },
+      complex:  { multMin:1.15, multMax:1.35 }
+    };
+
+    function travelFee(miles){
+      const extra = Math.max(0, miles - 10);
+      return { min: extra * 1.5, max: extra * 2.5 };
+    }
+    function urgencyFee(baseMin, baseMax, sameDay, weekend){
+      let min = 0, max = 0;
+      if (sameDay){ min += baseMin * 0.10; max += baseMax * 0.15; }
+      if (weekend){ min += baseMin * 0.10; max += baseMax * 0.15; }
+      return { min, max };
+    }
+    function money(n){ return "$" + Math.round(n); }
+
+    const elSvc = document.getElementById("svc");
+    const elQty = document.getElementById("qty");
+    const elLevel = document.getElementById("level");
+    const elMiles = document.getElementById("miles");
+    const elMaterials = document.getElementById("materials");
+    const elSameDay = document.getElementById("sameDay");
+    const elWeekend = document.getElementById("weekend");
+    const elNotes = document.getElementById("notes");
+
+    const elRange = document.getElementById("range");
+    const elBreak = document.getElementById("breakdown");
+
+    const elCalcBtn = document.getElementById("calcBtn");
+    const elWaBtn = document.getElementById("waBtn");
+
+    let last = null;
+
+    function calc(){
+      const key = elSvc.value;
+      const qty = Math.max(1, parseInt(elQty.value || "1", 10));
+      const lvl = elLevel.value;
+      const miles = Math.max(0, parseFloat(elMiles.value || "0"));
+
+      const p = PRICES[key];
+      const c = COMPLEX[lvl];
+
+      let baseMin = p.baseMin * qty * c.multMin;
+      let baseMax = p.baseMax * qty * c.multMax;
+
+      let matMin = 0, matMax = 0;
+      if (elMaterials.checked){
+        matMin = p.materialsMin * qty;
+        matMax = p.materialsMax * qty;
+      }
+
+      const tr = travelFee(miles);
+      const urg = urgencyFee(baseMin, baseMax, elSameDay.checked, elWeekend.checked);
+
+      const MIN_JOB = 120;
+      let totalMin = baseMin + matMin + tr.min + urg.min;
+      let totalMax = baseMax + matMax + tr.max + urg.max;
+
+      totalMin = Math.max(totalMin, MIN_JOB);
+      totalMax = Math.max(totalMax, MIN_JOB);
+
+      elRange.textContent = `${money(totalMin)} – ${money(totalMax)}`;
+      elBreak.innerHTML =
+        `<div class="smallmuted">
+          <b>${p.name}</b> × ${qty} • ${lvl}<br>
+          Labor: ${money(baseMin)}–${money(baseMax)}<br>
+          Travel: ${money(tr.min)}–${money(tr.max)}<br>
+          Urgency: ${money(urg.min)}–${money(urg.max)}<br>
+          Materials: ${money(matMin)}–${money(matMax)}
+        </div>`;
+
+      last = {
+        service: p.name,
+        qty, lvl, miles,
+        materials: elMaterials.checked,
+        sameDay: elSameDay.checked,
+        weekend: elWeekend.checked,
+        notes: (elNotes.value || "").trim(),
+        min: Math.round(totalMin),
+        max: Math.round(totalMax)
+      };
+    }
+
+    function sendToWhatsApp(){
+      if (!last) calc();
+
+      const msg =
+`Hi! I used your estimate calculator.
+
+Service: ${last.service}
+Qty: ${last.qty}
+Complexity: ${last.lvl}
+Travel miles: ${last.miles}
+Materials: ${last.materials ? "Yes" : "No"}
+Same-day: ${last.sameDay ? "Yes" : "No"}
+Weekend: ${last.weekend ? "Yes" : "No"}
+
+Estimated range (approx.): $${last.min} – $${last.max}
+${last.notes ? "\nNotes: " + last.notes : ""}
+
+Please confirm final pricing and availability.`;
+
+      const url = "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(msg);
+      window.open(url, "_blank");
+    }
+
+    if (elCalcBtn) elCalcBtn.addEventListener("click", calc);
+    if (elWaBtn) elWaBtn.addEventListener("click", sendToWhatsApp);
+
+    ["change","input"].forEach(evt=>{
+      [elSvc,elQty,elLevel,elMiles,elMaterials,elSameDay,elWeekend].forEach(x=>{
+        if (x) x.addEventListener(evt, ()=>{ last=null; calc(); });
+      });
+      if (elNotes) elNotes.addEventListener(evt, ()=>{ last=null; });
+    });
+
+    if (elSvc) calc();
+  </script>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CGZ526R0BP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-CGZ526R0BP');
+</script>
+
+</body>
+</html>
