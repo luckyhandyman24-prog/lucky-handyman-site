@@ -734,31 +734,40 @@
       });
     }
 
-    // ===== quote form -> Netlify Function (/api/lead) =====
 const quoteForm = document.getElementById("quoteForm");
+
 if (quoteForm){
   quoteForm.addEventListener("submit", async function(e){
     e.preventDefault();
 
-    const name = document.getElementById("qName").value.trim();
-    const phone = document.getElementById("qPhone").value.trim();
-    const city = document.getElementById("qCity").value.trim();
-    const details = document.getElementById("qDetails").value.trim();
-
-    // минимальная валидация
-    if (!name || !phone){
-      alert("Please enter your name and phone number.");
-      return;
-    }
-
     const payload = {
-      name,
-      phone,
-      city,
-      details,
-      source: "website_estimate_popup",
-      page: location.href
+      name: document.getElementById("qName").value.trim(),
+      phone: document.getElementById("qPhone").value.trim(),
+      city: document.getElementById("qCity").value.trim(),
+      details: document.getElementById("qDetails").value.trim(),
+      source: "website-popup",
+      page: location.href,
+      ts: new Date().toISOString()
     };
+
+    try{
+      const res = await fetch("/.netlify/functions/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if(!res.ok) throw new Error("HTTP " + res.status);
+
+      alert("✅ Request sent! We will contact you shortly.");
+      quoteForm.reset();
+      document.getElementById("estimatePop")?.classList.remove("open");
+    }catch(err){
+      alert("❌ Error sending request. Please use WhatsApp button.");
+      console.error(err);
+    }
+  });
+}
 
     try {
       const r = await fetch("/api/lead", {
