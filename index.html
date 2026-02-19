@@ -487,6 +487,7 @@
                       </div>
 
                       <button class="submit" type="submit">SEND REQUEST</button>
+					  <div class="small" id="leadStatus" style="margin-top:10px"></div>
                       <div class="small">We’ll reply quickly by phone or message.</div>
                     </form>
 
@@ -764,6 +765,8 @@
 
       const submitBtn = quoteForm.querySelector('button[type="submit"]');
       if (submitBtn) submitBtn.disabled = true;
+	  const statusEl = document.getElementById("leadStatus");
+if (statusEl) statusEl.textContent = "Sending...";
 
       try {
         const res = await fetch("/.netlify/functions/lead", {
@@ -777,13 +780,23 @@
         if (!res.ok) {
           throw new Error(txt || ("HTTP " + res.status));
         }
+		const waMsg =
+`New Lead (Website)
+Name: ${payload.name}
+Phone: ${payload.phone}
+City: ${payload.city || "-"}
+Details: ${payload.details || "-"}
+Page: ${payload.page}`;
 
-        alert("✅ Request sent! We will contact you shortly.");
+const waUrl = "https://wa.me/16892208902?text=" + encodeURIComponent(waMsg);
+window.open(waUrl, "_blank");
+
+        if (statusEl) statusEl.textContent = "✅ Sent! We will contact you shortly.";
         quoteForm.reset();
         document.getElementById("estimatePop")?.classList.remove("open");
       } catch (err) {
         console.error(err);
-        alert("❌ Error sending request. Please use WhatsApp button.");
+        if (statusEl) statusEl.textContent = "❌ Error sending. Please use WhatsApp.";
       } finally {
         if (submitBtn) submitBtn.disabled = false;
       }
