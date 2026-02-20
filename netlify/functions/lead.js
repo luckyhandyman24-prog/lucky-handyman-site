@@ -33,6 +33,17 @@ export async function handler(event) {
       return { ok: false, skipped: "env_missing" };
     }
 
+    // ✅ ВАЖНО: в ERPNext поле "notes" — это child table, туда нельзя строку.
+    // Поэтому кладем текст в remarks (обычное текстовое поле).
+    const remarksText = [
+      data.details ? `Details: ${data.details}` : null,
+      data.page ? `Page: ${data.page}` : null,
+      data.source ? `Raw source: ${data.source}` : null,
+      data.ts ? `TS: ${data.ts}` : null,
+    ]
+      .filter(Boolean)
+      .join("\n");
+
     const payload = {
       doctype: "Lead",
       lead_name: data.name || "Website Lead",
@@ -40,14 +51,7 @@ export async function handler(event) {
       email_id: data.email || "",
       city: data.city || "",
       source: normalizeSource(data.source), // Website / Facebook / Google
-      notes: [
-        data.details ? `Details: ${data.details}` : null,
-        data.page ? `Page: ${data.page}` : null,
-        data.source ? `Raw source: ${data.source}` : null,
-        data.ts ? `TS: ${data.ts}` : null,
-      ]
-        .filter(Boolean)
-        .join("\n"),
+      remarks: remarksText,                 // ✅ текст сюда
     };
 
     // ВАЖНО: ngrok предупреждение обходим этим заголовком
@@ -65,9 +69,7 @@ export async function handler(event) {
     console.log("ERP STATUS:", r.status);
     console.log("ERP BODY:", text);
 
-    if (!r.ok) {
-      return { ok: false, status: r.status, body: text };
-    }
+    if (!r.ok) return { ok: false, status: r.status, body: text };
     return { ok: true, body: text };
   }
 
@@ -125,10 +127,10 @@ Source: ${data.source || "-"}
 Page: ${data.page || "-"}
 Time: ${data.ts || "-"}`;
 
-    // 1) Шлём в WhatsApp (как было)
+    // 1) Шлём в WhatsApp
     const waResult = await sendToWhatsApp(msg);
 
-    // 2) Шлём в ERPNext (новое)
+    // 2) Шлём в ERPNext
     const erpResult = await sendToERPNext(data);
 
     // НИКОГДА не валим форму, даже если WA/ERP упали
@@ -139,7 +141,6 @@ Time: ${data.ts || "-"}`;
         ok: true,
         whatsapp: waResult.ok ? "sent" : (waResult.skipped || "failed"),
         erpnext: erpResult.ok ? "created" : (erpResult.skipped || "failed"),
-        // для отладки можно оставить только статус, без body:
         erp_status: erpResult.status || null,
         wa_status: waResult.status || null,
       }),
